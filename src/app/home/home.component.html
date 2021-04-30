@@ -1,0 +1,73 @@
+<div class="top  p-3 bg-secondary">
+  <div class="d-flex bd-highlight text-white font-popins">
+
+    <div class="p-2 flex-grow-1 bd-highlight fs-1 ">
+      <span></span><span>Timesheets</span>
+    </div>
+    <div class="p-2 bd-highlight fs-5 md-fs-4 text-warning">Test User</div>
+  </div>
+</div>
+<div class="container mt-5">
+
+  <div class="container overflow-hidden second m-1 w-100">
+    <div class="row gx-3 gy-3 mb-5">
+      <div class="col-12 col-md-4  d-flex justify-content-center align-items-center">
+        <mat-form-field class="date-picker" appearance="outline">
+          <mat-label>Date Range</mat-label>
+          <mat-date-range-input
+            [formGroup]="defaultDateGroup"
+            [rangePicker]="defaultPicker"
+            [comparisonStart]="defaultDateGroup.value.start"
+            [comparisonEnd]="defaultDateGroup.value.end">
+            <input matStartDate placeholder="Start date" formControlName="start">
+            <input matEndDate placeholder="End date" formControlName="end">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="defaultPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #defaultPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-md-4  d-flex justify-content-center align-items-center">
+        <button class="outline-none btn btn-outline-primary btn-lg" (click)="isCapture=!isCapture">
+         Capture Timesheet
+        </button>
+      </div>
+      <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
+        <button class="outline-none btn btn-outline-primary btn-lg">
+          Generate PDF
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container overflow-hidden" *ngIf="isCapture">
+    <div class="row gy-3">
+      <div class="list-group col-12 col-md-6" *ngFor="let dates of currentSeries">
+        <a href="#" class="list-group-item list-group-item-action " aria-current="true">
+          <div class="d-flex w-100 justify-content-between align-items-center">
+            <h4 class="mb-1 flex-grosw-1">{{dates | date: 'dd-MMM-yyyy'}}</h4>
+            <small class="mr-5 p-1">
+              <span class="form-group"><input type="number" min="0" placeholder="hours" max="16" class="form-control"></span>
+            </small>
+            <small class="mr-4 p-1">
+               <input type="number" min="0" max="60" placeholder="minutes" class="form-control">
+            </small>
+            <small>
+              <select class="form-select" aria-label="Default select example">
+                <option selected disabled>Description</option>
+                <option *ngFor="let op of ['Weekend', 'Leave', 'Holiday', 'Other']; let ind=index" (change)="getValue(op)" [value]="ind">{{op}}</option>
+              </select>
+            </small>
+            <small><mat-icon aria-hidden="false" aria-label="Example home icon">cloud_upload</mat-icon></small>
+
+
+          </div>
+          <div class="description" *ngIf="showDescription">
+              <p>Welcome</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
