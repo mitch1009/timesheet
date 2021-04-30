@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
     const year = this.today.getFullYear(); // get current year
     this.firstDate = new Date(year, month, 1); // first date of the month
     this.lastDate = new Date(year, month + 1, 0); // last date of the month
-    this.firstDate.setDate(this.firstDate.getDate() + 15); // ad 15 days to get teh starting date of muse time-sheets
+    this.firstDate.setDate(this.firstDate.getDate() - 15); // ad 15 days to get teh starting date of muse time-sheets
     this.lastDate.setDate(this.lastDate.getDate() + 16); // add 16 days to the last date of the moth to set the end of this interval
 
     /*Initialize Date FormGroup */
