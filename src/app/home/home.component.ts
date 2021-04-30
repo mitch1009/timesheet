@@ -50,6 +50,6 @@ export class HomeComponent implements OnInit {
   /* gets the value of the selected description option and returns a boolean*/
   // tslint:disable-next-line:typedef
   getValue(op: string) {
-    return (op !== 'Other') ? this.showDescription = false :  this.showDescription = !this.showDescription
+    return (op !== 'Other') ? this.showDescription = false :  this.showDescription = !this.showDescription;
   }
 }
