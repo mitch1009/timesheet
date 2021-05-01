@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -12,6 +11,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MomentModule} from 'ngx-moment';
 import {MatInputModule} from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
+import {HttpClientModule} from '@angular/common/http';
 
 
 @NgModule({
@@ -20,6 +20,7 @@ import {MatDividerModule} from '@angular/material/divider';
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     HomeRoutingModule,
     MatFormFieldModule,
     MatInputModule,

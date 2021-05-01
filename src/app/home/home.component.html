@@ -22,7 +22,7 @@
             <input matStartDate placeholder="Start date" formControlName="start">
             <input matEndDate placeholder="End date" formControlName="end">
           </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="defaultPicker"></mat-datepicker-toggle>
+          <mat-datepicker-toggle matSuffix [for]="defaultPicker" ></mat-datepicker-toggle>
           <mat-date-range-picker #defaultPicker></mat-date-range-picker>
         </mat-form-field>
       </div>
@@ -53,16 +53,21 @@
                <input type="number" min="0" max="60" placeholder="minutes" class="form-control">
             </small>
             <small>
+
               <select class="form-select" aria-label="Default select example">
                 <option selected disabled>Description</option>
-                <option *ngFor="let op of ['Weekend', 'Leave', 'Holiday', 'Other']; let ind=index" (change)="getValue(op)" [value]="ind">{{op}}</option>
-              </select>
+                <option *ngFor="let op of description" [value]="op.value" (click)="descriptions(op.value)">
+                    {{op.viewValue}}
+                  </option>
+                </select>
+
+
             </small>
             <small><mat-icon aria-hidden="false" aria-label="Example home icon">cloud_upload</mat-icon></small>
 
 
           </div>
-          <div class="description" *ngIf="showDescription">
+          <div class="description" *ngIf="!descrip">
               <p>Welcome</p>
           </div>
         </a>

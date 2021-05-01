@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-
+import {Description, Manager, Timesheet} from '../Core/General';
+import {ManagerService} from '../Core/Services/manager.service';
+import {TimesheetService} from '../Core/Services/timesheet.service';
 
 
 @Component({
@@ -9,6 +11,13 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  descrip = true;
+  timesheet: Timesheet[];
+  manager: Manager[];
+
+  description: Description[] = [{value: 'Weekend', viewValue: 'Weekend'}, {value: 'Festival', viewValue: 'Festival'},
+    {value: 'Other', viewValue: 'Other'}];
+
   defaultDateGroup: FormGroup;
   isCapture: boolean; // toggle capture content using the capture button
   today = new Date(); // get today's date - LocateDate
@@ -17,7 +26,8 @@ export class HomeComponent implements OnInit {
   lastDate: Date;
   currentSeries: Date[];
   showDescription: boolean;
-  constructor(private fb: FormBuilder) {
+
+  constructor(private fb: FormBuilder, private managerService: ManagerService, private timesheetService: TimesheetService) {
     const month = this.today.getMonth(); // get the current month
     const year = this.today.getFullYear(); // get current year
     this.firstDate = new Date(year, month, 1); // first date of the month
@@ -33,6 +43,14 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.timesheetService.getAllTimesheets().subscribe(data => {
+      this.timesheet = data;
+      console.log(this.timesheet);
+    });
+    this.managerService.getManagerById(1).subscribe(data => {
+      this.manager = data;
+      console.log(this.manager);
+    });
     this.currentSeries = this.shuffleDates(this.firstDate, this.lastDate); // instantiate currentSeries array
   }
 
@@ -48,8 +66,20 @@ export class HomeComponent implements OnInit {
   }
 
   /* gets the value of the selected description option and returns a boolean*/
+
   // tslint:disable-next-line:typedef
   getValue(op: string) {
-    return (op !== 'Other') ? this.showDescription = false :  this.showDescription = !this.showDescription
+    return (op !== 'Other') ? this.showDescription = false : this.showDescription = !this.showDescription;
+  }
+
+  // tslint:disable-next-line:typedef
+  descriptions(de: string) {
+    if (de === 'Other') {
+      this.descrip = !this.descrip;
+    } else {
+      this.descrip = true;
+
+    }
+
   }
 }
