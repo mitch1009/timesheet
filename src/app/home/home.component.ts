@@ -101,6 +101,7 @@ export class HomeComponent implements OnInit {
 
   }
   cloudSave(event: any, option: string, date?: Date): void{
+    event.preventDefault();
     const target = event.target.dataset;
     const hoursRef = target.hoursReference;
     const buttonRef = target.buttonReference;

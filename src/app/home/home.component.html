@@ -47,23 +47,17 @@
           <div class="d-flex w-100 justify-content-between align-items-center">
             <h4 class="mb-1 flex-grosw-1">{{dates | date: 'dd-MMM-yyyy'}}</h4>
             <small class="mr-5 p-1">
-              <span class="form-group"><input type="number" (change) ='cloudSave($event, "hours")' [attr.data-hours-reference]="dates | date:'ddMMMyyyy'" min="0" placeholder="hours" max="16" class="form-control"></span>
+              <span class="form-group"><input type="number"
+                                              (change) ='cloudSave($event, "hours")' [attr.data-hours-reference]="dates | date:'ddMMMyyyy'" min="0"
+                                              placeholder="Hrs" max="16" class="form-control"></span>
             </small>
             <small class="mr-4 p-1">
-               <input type="number" (change) ='cloudSave($event,"minutes")' [attr.data-minutes-reference]="dates | date:'ddMMMyyyy'" min="0" max="60" placeholder="minutes" class="form-control">
+               <input type="number"
+                      (change) ='cloudSave($event,"minutes")' [attr.data-minutes-reference]="dates | date:'ddMMMyyyy'" min="0"
+                      max="60" placeholder="Min" class="form-control">
             </small>
             <small>
-<!--              <select class="form-select form-select-sm" aria-label=".form-select-sm example"-->
-<!--                      [ngModel]="selectedValue"-->
-<!--                      [attr.data-description-reference]="dates | date: 'ddMMMyyyy'"-->
-<!--                      (change)="onChange($event)"-->
-<!--                      [attr.aria-label]="dates | date: 'ddMMMyyyy'"-->
-<!--                      placeholder="l"-->
-<!--                      >-->
-<!--                <option selected disabled>Open this select menu</option>-->
-<!--                <option [value]="i.value" *ngFor="let i of description">{{i.viewValue}}</option>-->
 
-<!--              </select>-->
               <select class="form-select form-select-sm" aria-label=".form-select-sm example"
                       [attr.data-description-reference]="dates | date: 'ddMMMyyyy'"
                       (change)="onChange($event)"
