@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Description, Manager, Timesheet} from '../Core/General';
 import {ManagerService} from '../Core/Services/manager.service';
 import {TimesheetService} from '../Core/Services/timesheet.service';
+import {MatSelect} from '@angular/material/select';
 
 
 @Component({
@@ -32,8 +33,8 @@ export class HomeComponent implements OnInit {
     const year = this.today.getFullYear(); // get current year
     this.firstDate = new Date(year, month, 1); // first date of the month
     this.lastDate = new Date(year, month + 1, 0); // last date of the month
-    this.firstDate.setDate(this.firstDate.getDate() - 15); // ad 15 days to get teh starting date of muse time-sheets
-    this.lastDate.setDate(this.lastDate.getDate() + 16); // add 16 days to the last date of the moth to set the end of this interval
+    this.firstDate.setDate(this.firstDate.getDate() + 15); // ad 15 days to get teh starting date of muse time-sheets
+    this.lastDate.setDate(this.lastDate.getDate() + 15); // add 16 days to the last date of the moth to set the end of this interval
 
     /*Initialize Date FormGroup */
     this.defaultDateGroup = new FormGroup({
@@ -42,16 +43,20 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  @ViewChild('SelectedValue') SelectedValue: MatSelect;
+
   ngOnInit(): void {
+    console.log(this.shuffleDates(this.firstDate, this.lastDate));
     this.timesheetService.getAllTimesheets().subscribe(data => {
       this.timesheet = data;
       console.log(this.timesheet);
     });
-    this.managerService.getManagerById(1).subscribe(data => {
+    this.managerService.getAllManagers().subscribe(data => {
       this.manager = data;
       console.log(this.manager);
     });
     this.currentSeries = this.shuffleDates(this.firstDate, this.lastDate); // instantiate currentSeries array
+    console.log(this.currentSeries);
   }
 
   shuffleDates(startDate: Date, endDate: Date): Date[] {
@@ -65,6 +70,18 @@ export class HomeComponent implements OnInit {
     return dates;
   }
 
+  captureTimesheet(): void {
+    console.log(this.defaultDateGroup);
+    const startDate = this.defaultDateGroup.value.start;
+    const endDate = this.defaultDateGroup.value.end;
+    console.log(startDate);
+    console.log(endDate);
+    this.firstDate = startDate;
+    this.lastDate = endDate;
+    console.log(this.firstDate);
+    this.currentSeries = this.shuffleDates(this.firstDate, this.lastDate);
+  }
+
   /* gets the value of the selected description option and returns a boolean*/
 
   // tslint:disable-next-line:typedef
@@ -73,13 +90,20 @@ export class HomeComponent implements OnInit {
   }
 
   // tslint:disable-next-line:typedef
-  descriptions(de: string) {
-    if (de === 'Other') {
-      this.descrip = !this.descrip;
-    } else {
-      this.descrip = true;
+  descriptions($event: any) {
+    this.SelectedValue.valueChange.subscribe(data => {
+      console.log(data);
+    });
+    console.log(document.querySelector('data-option'));
+    console.log($event.target.dataset.option);
+    console.log($event.target.id);
+    console.log($event.target.firstChild.data);
+    /* if (op === 'Other') {
+       this.descrip = !this.descrip;
+     } else {
+       this.descrip = true;
 
-    }
+     }*/
 
   }
 }

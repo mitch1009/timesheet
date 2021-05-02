@@ -12,6 +12,7 @@ import {MomentModule} from 'ngx-moment';
 import {MatInputModule} from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
 import {HttpClientModule} from '@angular/common/http';
+import {MatSelect, MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import {HttpClientModule} from '@angular/common/http';
         m: 59
       }
     }),
-    MatOptionModule
+    MatOptionModule,
+    MatSelectModule
   ]
 })
 export class HomeModule { }

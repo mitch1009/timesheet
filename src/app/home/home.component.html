@@ -27,7 +27,7 @@
         </mat-form-field>
       </div>
       <div class="col-12 col-md-4  d-flex justify-content-center align-items-center">
-        <button class="outline-none btn btn-outline-primary btn-lg" (click)="isCapture=!isCapture">
+        <button class="outline-none btn btn-outline-primary btn-lg" (click)="isCapture=!isCapture; captureTimesheet()">
          Capture Timesheet
         </button>
       </div>
@@ -54,13 +54,20 @@
             </small>
             <small>
 
-              <select class="form-select" aria-label="Default select example">
-                <option selected disabled>Description</option>
-                <option *ngFor="let op of description" [value]="op.value" (click)="descriptions(op.value)">
+             <!-- <select class="form-select" aria-label="Default select example" (change)="descriptions($event)" id="{{dates | date: 'ddMMMyyyy'}}"   [attr.data-option]="dates | date: 'ddMMMyyyy'" >
+                <option *ngFor="let op of description" [value]="op.value">
                     {{op.viewValue}}
                   </option>
-                </select>
+                </select>-->
 
+              <mat-form-field appearance="">
+                <mat-label>Description</mat-label>
+                <mat-select #SelectedValue (change)="descriptions($event)">
+                  <mat-option *ngFor="let op of description" [value]="op.value"  [attr.data-option]="dates | date: 'ddMMMyyyy'">
+                    {{op.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
 
             </small>
             <small><mat-icon aria-hidden="false" aria-label="Example home icon">cloud_upload</mat-icon></small>
