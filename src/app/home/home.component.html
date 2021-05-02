@@ -12,7 +12,7 @@
   <div class="container overflow-hidden second m-1 w-100">
     <div class="row gx-3 gy-3 mb-5">
       <div class="col-12 col-md-4  d-flex justify-content-center align-items-center">
-        <mat-form-field class="date-picker" appearance="outline">
+        <mat-form-field class="date-picker" appearance="">
           <mat-label>Date Range</mat-label>
           <mat-date-range-input
             [formGroup]="defaultDateGroup"
@@ -22,12 +22,12 @@
             <input matStartDate placeholder="Start date" formControlName="start">
             <input matEndDate placeholder="End date" formControlName="end">
           </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="defaultPicker"></mat-datepicker-toggle>
+          <mat-datepicker-toggle matSuffix [for]="defaultPicker" ></mat-datepicker-toggle>
           <mat-date-range-picker #defaultPicker></mat-date-range-picker>
         </mat-form-field>
       </div>
       <div class="col-12 col-md-4  d-flex justify-content-center align-items-center">
-        <button class="outline-none btn btn-outline-primary btn-lg" (click)="isCapture=!isCapture">
+        <button class="outline-none btn btn-outline-primary btn-lg" (click)="isCapture=!isCapture; captureTimesheet()">
          Capture Timesheet
         </button>
       </div>
@@ -47,23 +47,51 @@
           <div class="d-flex w-100 justify-content-between align-items-center">
             <h4 class="mb-1 flex-grosw-1">{{dates | date: 'dd-MMM-yyyy'}}</h4>
             <small class="mr-5 p-1">
-              <span class="form-group"><input type="number" min="0" placeholder="hours" max="16" class="form-control"></span>
+              <span class="form-group"><input type="number" (change) ='cloudSave($event, "hours")' [attr.data-hours-reference]="dates | date:'ddMMMyyyy'" min="0" placeholder="hours" max="16" class="form-control"></span>
             </small>
             <small class="mr-4 p-1">
-               <input type="number" min="0" max="60" placeholder="minutes" class="form-control">
+               <input type="number" (change) ='cloudSave($event,"minutes")' [attr.data-minutes-reference]="dates | date:'ddMMMyyyy'" min="0" max="60" placeholder="minutes" class="form-control">
             </small>
             <small>
-              <select class="form-select" aria-label="Default select example">
+<!--              <select class="form-select form-select-sm" aria-label=".form-select-sm example"-->
+<!--                      [ngModel]="selectedValue"-->
+<!--                      [attr.data-description-reference]="dates | date: 'ddMMMyyyy'"-->
+<!--                      (change)="onChange($event)"-->
+<!--                      [attr.aria-label]="dates | date: 'ddMMMyyyy'"-->
+<!--                      placeholder="l"-->
+<!--                      >-->
+<!--                <option selected disabled>Open this select menu</option>-->
+<!--                <option [value]="i.value" *ngFor="let i of description">{{i.viewValue}}</option>-->
+
+<!--              </select>-->
+              <select class="form-select form-select-sm" aria-label=".form-select-sm example"
+                      [attr.data-description-reference]="dates | date: 'ddMMMyyyy'"
+                      (change)="onChange($event)"
+                      [attr.aria-label]="dates | date: 'ddMMMyyyy'">
                 <option selected disabled>Description</option>
-                <option *ngFor="let op of ['Weekend', 'Leave', 'Holiday', 'Other']; let ind=index" (change)="getValue(op)" [value]="ind">{{op}}</option>
+                <option *ngFor="let d of description" [value]="d.value">{{d.viewValue}}</option>
+
               </select>
             </small>
-            <small><mat-icon aria-hidden="false" aria-label="Example home icon">cloud_upload</mat-icon></small>
-
-
+            <!-- Save button -->
+            <small>
+              <mat-icon aria-hidden="false"
+                        [attr.data-label]="'save'+ (dates | date:'ddMMMyyyy')"
+                        [attr.data-button-reference]="dates | date:'ddMMMyyyy'"
+                        (click)="cloudSave($event, 'save', dates)"
+              >cloud_upload
+              </mat-icon>
+            </small>
+            <!-- Text Area -->
           </div>
-          <div class="description" *ngIf="showDescription">
-              <p>Welcome</p>
+          <div class="description" [attr.data-hidden]="true" [id]="dates | date: 'ddMMMyyyy'">
+            <textarea
+              [attr.data-description-reference]="dates | date: 'ddMMMyyy'+ 'description'"
+              [id]="dates | date: 'ddMMMyyy'+ 'description'"
+              rows="3"
+              class="form-control"
+              (change)="cloudSave($event,'description')"
+              placeholder="Type your custom description..."></textarea>
           </div>
         </a>
       </div>
