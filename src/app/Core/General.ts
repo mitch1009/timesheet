@@ -23,13 +23,19 @@ export interface User {
 }
 
 export interface Timesheet {
-  timesheetId: number;
-  duration: number;
-  description: string;
-  status: boolean;
-  user: User[];
+  timesheetId?: number;
+  duration?: number;
+  date?: number;
+  description?: string;
+  status?: boolean;
+  user?: User[];
 }
 
+export interface  RawTimesheetData{
+  hours?: number;
+  minutes?: number;
+  description?: string;
+}
 export interface UpdateManager {
   id: number;
   action: string;

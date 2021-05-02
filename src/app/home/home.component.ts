@@ -1,9 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Description, Manager, Timesheet} from '../Core/General';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {Description, Manager, RawTimesheetData, Timesheet} from '../Core/General';
 import {ManagerService} from '../Core/Services/manager.service';
 import {TimesheetService} from '../Core/Services/timesheet.service';
-import {MatSelect} from '@angular/material/select';
 
 
 @Component({
@@ -12,13 +11,16 @@ import {MatSelect} from '@angular/material/select';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
+  postTimesheetData: Timesheet;
+  hoursRef: string;
+  buttonRef: string;
+  setDescrition: string;
   constructor(private fb: FormBuilder, private managerService: ManagerService, private timesheetService: TimesheetService) {
     const month = this.today.getMonth(); // get the current month
     const year = this.today.getFullYear(); // get current year
     this.firstDate = new Date(year, month, 1); // first date of the month
     this.lastDate = new Date(year, month + 1, 0); // last date of the month
-    this.firstDate.setDate(this.firstDate.getDate() + 15); // ad 15 days to get teh starting date of muse time-sheets
+    this.firstDate.setDate(this.firstDate.getDate() - 15); // ad 15 days to get teh starting date of muse time-sheets
     this.lastDate.setDate(this.lastDate.getDate() + 15); // add 16 days to the last date of the moth to set the end of this interval
 
     /*Initialize Date FormGroup */
@@ -30,6 +32,7 @@ export class HomeComponent implements OnInit {
   descrip = true;
   timesheet: Timesheet[];
   manager: Manager[];
+  rawinputs: RawTimesheetData | undefined; // form inputs group
 
   description: Description[] = [{value: 'Weekend', viewValue: 'Weekend'}, {value: 'Festival', viewValue: 'Festival'},
     {value: 'Other', viewValue: 'Other'}];
@@ -51,6 +54,8 @@ export class HomeComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.postTimesheetData = {};
+    this.rawinputs = {};
     this.currentSeries = this.shuffleDates(this.firstDate, this.lastDate); // instantiate currentSeries array
   }
 
@@ -72,23 +77,72 @@ export class HomeComponent implements OnInit {
     this.lastDate = endDate;
     this.currentSeries = this.shuffleDates(this.firstDate, this.lastDate);
   }
-  onChange(e: any): void {
+  onChange(event: any): void {
     // set the target element
-    const target = e.target;
+    const target = event.target;
     // grab the data attribute from the target element
-    const selectedSection = e.target.dataset.dateSelect;
+    const selectedSection = target.dataset.descriptionReference;
     // grab the innerText from the target element
     const text = target.options[target.options.selectedIndex].innerText;
     // get the text area inside the current element given its dataset value
     const textAreaElement = document.getElementById(selectedSection);
     if (text === 'Other'){ // if the selected option is Other show the text area
       textAreaElement.dataset.hidden = String(false);
+      this.setDescrition = text;
     }else { // else keep it in its hidden state.
       textAreaElement.dataset.hidden = String(true);
+      this.setDescrition = null;
+      this.cloudSave(event, 'description');
     }
+
   }
-  cloudSave(e: any): void{
-    alert(e.target.dataset.label);
+  cloudSave(event: any, option: string, date?: Date): void{
+    const target = event.target.dataset;
+    const hoursRef = target.hoursReference;
+    const buttonRef = target.buttonReference;
+    switch (option){
+      case 'hours':
+        const rowHours = event.target.value;
+        this.rawinputs.hours = rowHours;
+        this.hoursRef = hoursRef;
+        break;
+      case 'minutes':
+        const rowMinutes = event.target.value;
+        this.rawinputs.minutes = rowMinutes;
+        break;
+      case 'description':
+        if ( this.setDescrition === undefined || this.setDescrition === 'Other' || this.setDescrition == null){
+          this.setDescrition = event.target.value;
+        }
+        this.rawinputs.description = this.setDescrition;
+
+        break;
+      case 'save':
+        this.buttonRef = buttonRef;
+        if (this.rawinputs?.hours !== undefined && this.rawinputs?.minutes
+          !== undefined && this.rawinputs?.description !== undefined){
+          const converter = (this.rawinputs.hours * 60) + this.rawinputs.minutes;
+          this.postTimesheetData.duration = converter;
+          this.postTimesheetData.description = this.rawinputs.description;
+          this.postTimesheetData.date = date.getTime();
+        }
+
+        if ( this.postTimesheetData !== undefined){
+          if (this.hoursRef === this.buttonRef){
+            console.log(this.postTimesheetData);
+          }else{
+            console.log('different button clicked  ' + this.buttonRef);
+          }
+
+
+        }
+        break;
+      default:
+        break;
+    }
     return null;
   }
+
+
+
 }
