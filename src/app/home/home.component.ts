@@ -21,7 +21,9 @@ export class HomeComponent implements OnInit {
     this.firstDate = new Date(year, month, 1); // first date of the month
     this.lastDate = new Date(year, month + 1, 0); // last date of the month
     this.firstDate.setDate(this.firstDate.getDate() - 15); // ad 15 days to get teh starting date of muse time-sheets
-    this.lastDate.setDate(this.lastDate.getDate() + 15); // add 16 days to the last date of the moth to set the end of this interval
+
+    this.lastDate.setDate(this.lastDate.getDate() + 16); // add 16 days to the last date of the moth to set the end of this interval
+
 
     /*Initialize Date FormGroup */
     this.defaultDateGroup = new FormGroup({
@@ -70,6 +72,7 @@ export class HomeComponent implements OnInit {
     return dates;
   }
 
+
   captureTimesheet(): void {
     const startDate = this.defaultDateGroup.value.start;
     const endDate = this.defaultDateGroup.value.end;
@@ -94,6 +97,7 @@ export class HomeComponent implements OnInit {
       this.setDescrition = null;
       this.cloudSave(event, 'description');
     }
+
 
   }
   cloudSave(event: any, option: string, date?: Date): void{
