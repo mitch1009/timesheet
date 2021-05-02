@@ -12,6 +12,21 @@ import {MatSelect} from '@angular/material/select';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+  constructor(private fb: FormBuilder, private managerService: ManagerService, private timesheetService: TimesheetService) {
+    const month = this.today.getMonth(); // get the current month
+    const year = this.today.getFullYear(); // get current year
+    this.firstDate = new Date(year, month, 1); // first date of the month
+    this.lastDate = new Date(year, month + 1, 0); // last date of the month
+    this.firstDate.setDate(this.firstDate.getDate() + 15); // ad 15 days to get teh starting date of muse time-sheets
+    this.lastDate.setDate(this.lastDate.getDate() + 15); // add 16 days to the last date of the moth to set the end of this interval
+
+    /*Initialize Date FormGroup */
+    this.defaultDateGroup = new FormGroup({
+      start: new FormControl(this.firstDate), // Start Date
+      end: new FormControl(this.lastDate) // End date
+    });
+  }
   descrip = true;
   timesheet: Timesheet[];
   manager: Manager[];
@@ -28,35 +43,15 @@ export class HomeComponent implements OnInit {
   currentSeries: Date[];
   showDescription: boolean;
 
-  constructor(private fb: FormBuilder, private managerService: ManagerService, private timesheetService: TimesheetService) {
-    const month = this.today.getMonth(); // get the current month
-    const year = this.today.getFullYear(); // get current year
-    this.firstDate = new Date(year, month, 1); // first date of the month
-    this.lastDate = new Date(year, month + 1, 0); // last date of the month
-    this.firstDate.setDate(this.firstDate.getDate() + 15); // ad 15 days to get teh starting date of muse time-sheets
-    this.lastDate.setDate(this.lastDate.getDate() + 15); // add 16 days to the last date of the moth to set the end of this interval
+  selectedValue: string;
+  /* gets the value of the selected description option and returns a boolean*/
 
-    /*Initialize Date FormGroup */
-    this.defaultDateGroup = new FormGroup({
-      start: new FormControl(this.firstDate), // Start Date
-      end: new FormControl(this.lastDate) // End date
-    });
-  }
+  // tslint:disable-next-line:typedef
+  selectedDevice: any;
 
-  @ViewChild('SelectedValue') SelectedValue: MatSelect;
 
   ngOnInit(): void {
-    console.log(this.shuffleDates(this.firstDate, this.lastDate));
-    this.timesheetService.getAllTimesheets().subscribe(data => {
-      this.timesheet = data;
-      console.log(this.timesheet);
-    });
-    this.managerService.getAllManagers().subscribe(data => {
-      this.manager = data;
-      console.log(this.manager);
-    });
     this.currentSeries = this.shuffleDates(this.firstDate, this.lastDate); // instantiate currentSeries array
-    console.log(this.currentSeries);
   }
 
   shuffleDates(startDate: Date, endDate: Date): Date[] {
@@ -71,39 +66,29 @@ export class HomeComponent implements OnInit {
   }
 
   captureTimesheet(): void {
-    console.log(this.defaultDateGroup);
     const startDate = this.defaultDateGroup.value.start;
     const endDate = this.defaultDateGroup.value.end;
-    console.log(startDate);
-    console.log(endDate);
     this.firstDate = startDate;
     this.lastDate = endDate;
-    console.log(this.firstDate);
     this.currentSeries = this.shuffleDates(this.firstDate, this.lastDate);
   }
-
-  /* gets the value of the selected description option and returns a boolean*/
-
-  // tslint:disable-next-line:typedef
-  getValue(op: string) {
-    return (op !== 'Other') ? this.showDescription = false : this.showDescription = !this.showDescription;
+  onChange(e: any): void {
+    // set the target element
+    const target = e.target;
+    // grab the data attribute from the target element
+    const selectedSection = e.target.dataset.dateSelect;
+    // grab the innerText from the target element
+    const text = target.options[target.options.selectedIndex].innerText;
+    // get the text area inside the current element given its dataset value
+    const textAreaElement = document.getElementById(selectedSection);
+    if (text === 'Other'){ // if the selected option is Other show the text area
+      textAreaElement.dataset.hidden = String(false);
+    }else { // else keep it in its hidden state.
+      textAreaElement.dataset.hidden = String(true);
+    }
   }
-
-  // tslint:disable-next-line:typedef
-  descriptions($event: any) {
-    this.SelectedValue.valueChange.subscribe(data => {
-      console.log(data);
-    });
-    console.log(document.querySelector('data-option'));
-    console.log($event.target.dataset.option);
-    console.log($event.target.id);
-    console.log($event.target.firstChild.data);
-    /* if (op === 'Other') {
-       this.descrip = !this.descrip;
-     } else {
-       this.descrip = true;
-
-     }*/
-
+  cloudSave(e: any): void{
+    alert(e.target.dataset.label);
+    return null;
   }
 }
